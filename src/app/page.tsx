@@ -176,44 +176,44 @@ export default async function HomePage({ searchParams }: PageProps) {
         </section>
       )}
 
-      {/* 카테고리 칩 */}
-      <div className="flex gap-2 overflow-x-auto pb-4 scrollbar-hide">
-        <Link
-          href="/"
-          className={`shrink-0 px-3.5 py-1.5 rounded-full text-sm border transition-colors ${
-            !params.category
-              ? "bg-primary text-primary-foreground border-primary"
-              : "hover:bg-muted"
-          }`}
-        >
-          전체
-        </Link>
-        {CATEGORIES.map((cat) => (
-          <Link
-            key={cat.slug}
-            href={`/?category=${cat.slug}`}
-            className={`shrink-0 px-3.5 py-1.5 rounded-full text-sm border transition-colors ${
-              params.category === cat.slug
-                ? "bg-primary text-primary-foreground border-primary"
-                : "hover:bg-muted"
-            }`}
-          >
-            {cat.icon} {cat.name}
-          </Link>
-        ))}
-      </div>
-
-      {/* 검색 결과 표시 */}
-      {params.q && (
-        <p className="text-sm text-muted-foreground mb-4">
-          &quot;{params.q}&quot; 검색 결과 ({products?.length ?? 0}건)
-        </p>
-      )}
-
       {/* 메인 2컬럼 레이아웃 */}
       <div className="flex gap-6 mt-2">
-        {/* 왼쪽: 제품 목록 */}
+        {/* 왼쪽: 카테고리 + 제품 목록 */}
         <div className="flex-1 min-w-0">
+          {/* 카테고리 칩 */}
+          <div className="flex gap-2 overflow-x-auto pb-4 scrollbar-hide">
+            <Link
+              href="/"
+              className={`shrink-0 px-3.5 py-1.5 rounded-full text-sm border transition-colors ${
+                !params.category
+                  ? "bg-primary text-primary-foreground border-primary"
+                  : "hover:bg-muted"
+              }`}
+            >
+              전체
+            </Link>
+            {CATEGORIES.map((cat) => (
+              <Link
+                key={cat.slug}
+                href={`/?category=${cat.slug}`}
+                className={`shrink-0 px-3.5 py-1.5 rounded-full text-sm border transition-colors ${
+                  params.category === cat.slug
+                    ? "bg-primary text-primary-foreground border-primary"
+                    : "hover:bg-muted"
+                }`}
+              >
+                {cat.icon} {cat.name}
+              </Link>
+            ))}
+          </div>
+
+          {/* 검색 결과 표시 */}
+          {params.q && (
+            <p className="text-sm text-muted-foreground mb-4">
+              &quot;{params.q}&quot; 검색 결과 ({products?.length ?? 0}건)
+            </p>
+          )}
+
           <ProductGrid products={products ?? []} />
         </div>
 
