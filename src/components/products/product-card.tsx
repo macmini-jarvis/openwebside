@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Star, ThumbsUp } from "lucide-react";
+import { Star, ThumbsUp, ExternalLink } from "lucide-react";
 import { getCategoryName } from "@/lib/categories";
 import type { Product } from "@/types/database";
 
@@ -14,11 +14,11 @@ interface ProductCardProps {
 export function ProductCard({ product }: ProductCardProps) {
   return (
     <Link href={`/products/${product.id}`}>
-      <Card className="hover:shadow-md transition-shadow cursor-pointer h-full">
+      <Card className="hover:shadow-md hover:border-primary/20 transition-all cursor-pointer h-full group">
         <CardContent className="p-4">
           <div className="flex gap-3">
             {/* 로고 */}
-            <div className="shrink-0 w-12 h-12 rounded-lg bg-muted flex items-center justify-center overflow-hidden">
+            <div className="shrink-0 w-12 h-12 rounded-xl bg-muted flex items-center justify-center overflow-hidden ring-1 ring-border">
               {product.logo_url ? (
                 <img
                   src={product.logo_url}
@@ -34,12 +34,17 @@ export function ProductCard({ product }: ProductCardProps) {
 
             {/* 정보 */}
             <div className="min-w-0 flex-1">
-              <h3 className="font-semibold text-sm truncate">{product.title}</h3>
-              <p className="text-xs text-muted-foreground line-clamp-2 mt-0.5">
+              <div className="flex items-center gap-1.5">
+                <h3 className="font-semibold text-sm truncate group-hover:text-primary transition-colors">
+                  {product.title}
+                </h3>
+                <ExternalLink className="h-3 w-3 text-muted-foreground/50 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </div>
+              <p className="text-xs text-muted-foreground line-clamp-2 mt-1 leading-relaxed">
                 {product.description}
               </p>
-              <div className="flex items-center gap-2 mt-2 flex-wrap">
-                <Badge variant="secondary" className="text-xs">
+              <div className="flex items-center gap-2 mt-2.5 flex-wrap">
+                <Badge variant="secondary" className="text-xs font-normal">
                   {getCategoryName(product.category) ?? product.category}
                 </Badge>
                 {product.avg_rating > 0 && (
