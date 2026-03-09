@@ -111,6 +111,14 @@ export function Header() {
           </DropdownMenuContent>
         </DropdownMenu>
 
+        {/* 문의 */}
+        <Link
+          href="/contact"
+          className="hidden md:inline text-xs text-muted-foreground/60 hover:text-muted-foreground transition-colors"
+        >
+          문의
+        </Link>
+
         {/* 검색바 */}
         <form onSubmit={handleSearch} className="flex-1 max-w-md hidden md:flex">
           <div className="relative w-full">
@@ -214,6 +222,14 @@ export function Header() {
                   </Button>
                 )}
                 <div className="space-y-1">
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start text-muted-foreground"
+                    render={<Link href="/contact" />}
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    문의하기
+                  </Button>
                   <p className="text-sm font-medium text-muted-foreground px-2">
                     카테고리
                   </p>
