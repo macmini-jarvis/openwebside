@@ -127,7 +127,7 @@ export default async function HomePage({ searchParams }: PageProps) {
     .select("*")
     .eq("status", "approved")
     .order("upvote_count", { ascending: false })
-    .limit(10);
+    .limit(5);
 
   // 최근 등록
   const { data: recentProducts } = await supabase
@@ -218,7 +218,7 @@ export default async function HomePage({ searchParams }: PageProps) {
         </div>
 
         {/* 오른쪽: 사이드바 */}
-        <aside className="hidden lg:block w-72 shrink-0 sticky top-20 self-start space-y-5 max-h-[calc(100vh-6rem)] overflow-y-auto">
+        <aside className="hidden lg:block w-72 shrink-0 sticky top-20 self-start space-y-5">
           {/* 인기 랭킹 */}
           <div className="border rounded-xl p-4">
             <div className="flex items-center justify-between mb-3">
