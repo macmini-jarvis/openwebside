@@ -164,15 +164,6 @@ export default async function HomePage({ searchParams }: PageProps) {
             <br className="hidden sm:block" />
             다양한 무료 웹사이트를 찾고 이용할 수 있습니다.
           </p>
-          <div className="flex items-center justify-center gap-3 mt-6">
-            <Link
-              href="/products/new"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
-            >
-              <Sparkles className="h-4 w-4" />
-              무료로 사이트 등록
-            </Link>
-          </div>
         </section>
       )}
 
