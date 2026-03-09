@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import { ProductGrid } from "@/components/products/product-grid";
 import { getCategoryBySlug } from "@/lib/categories";
@@ -8,6 +9,22 @@ import { Badge } from "@/components/ui/badge";
 interface PageProps {
   params: Promise<{ slug: string }>;
   searchParams: Promise<{ sub?: string }>;
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const category = getCategoryBySlug(slug);
+  if (!category) return { title: "카테고리를 찾을 수 없습니다" };
+
+  return {
+    title: `${category.icon} ${category.name} - 무료 웹서비스 모음`,
+    description: `${category.name} 분야의 무료 웹사이트와 웹서비스를 찾아보세요. 리뷰와 별점으로 검증된 유용한 사이트를 추천합니다.`,
+    openGraph: {
+      title: `${category.name} - 무료 웹서비스 모음 | 오픈웹사이드`,
+      description: `${category.name} 분야의 무료 웹사이트와 웹서비스를 찾아보세요.`,
+      url: `https://openwebside.com/category/${slug}`,
+    },
+  };
 }
 
 export default async function CategoryPage({ params, searchParams }: PageProps) {

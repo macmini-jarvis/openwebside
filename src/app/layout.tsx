@@ -15,10 +15,57 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "오픈웹사이드 - 웹사이트를 발견하고 공유하세요",
+  metadataBase: new URL("https://openwebside.com"),
+  title: {
+    default: "오픈웹사이드 - 무료 웹사이트 홍보 & 유용한 웹서비스 모음",
+    template: "%s | 오픈웹사이드",
+  },
   description:
-    "내가 만든 웹사이트를 등록하고, 다른 사람들의 웹사이트를 발견하세요. 리뷰와 별점으로 좋은 웹서비스를 추천합니다.",
-  keywords: ["웹사이트 디렉토리", "웹서비스 추천", "사이트 리뷰", "한국 웹서비스"],
+    "내가 만든 웹사이트를 무료로 홍보하고, 다양한 무료 웹사이트를 발견하세요. AI 도구, 유틸리티, 학습 플랫폼 등 유용한 웹서비스를 리뷰와 별점으로 추천합니다.",
+  keywords: [
+    "무료 웹사이트 홍보",
+    "웹사이트 등록",
+    "무료 웹서비스 모음",
+    "웹사이트 디렉토리",
+    "웹서비스 추천",
+    "사이트 리뷰",
+    "무료 도구 모음",
+    "AI 도구 추천",
+    "한국 웹서비스",
+    "무료 사이트 모음",
+  ],
+  openGraph: {
+    type: "website",
+    locale: "ko_KR",
+    url: "https://openwebside.com",
+    siteName: "오픈웹사이드",
+    title: "오픈웹사이드 - 무료 웹사이트 홍보 & 유용한 웹서비스 모음",
+    description:
+      "내가 만든 웹사이트를 무료로 홍보하세요. 다양한 무료 웹서비스를 찾고 이용할 수 있습니다.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "오픈웹사이드 - 무료 웹사이트 홍보 & 유용한 웹서비스 모음",
+    description:
+      "내가 만든 웹사이트를 무료로 홍보하세요. 다양한 무료 웹서비스를 찾고 이용할 수 있습니다.",
+  },
+  alternates: {
+    canonical: "https://openwebside.com",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  verification: {
+    google: "GOOGLE_VERIFICATION_CODE",
+  },
 };
 
 export default function RootLayout({

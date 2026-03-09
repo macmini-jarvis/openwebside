@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 import { getCategoryName, getSubcategoryName } from "@/lib/categories";
@@ -9,6 +10,32 @@ import { ReviewSection } from "@/components/reviews/review-section";
 
 interface PageProps {
   params: Promise<{ id: string }>;
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { id } = await params;
+  const supabase = await createClient();
+  const { data: product } = await supabase
+    .from("products")
+    .select("title, description, category, logo_url")
+    .eq("id", id)
+    .eq("status", "approved")
+    .single();
+
+  if (!product) return { title: "제품을 찾을 수 없습니다" };
+
+  const categoryName = getCategoryName(product.category);
+
+  return {
+    title: `${product.title} - ${categoryName}`,
+    description: product.description?.slice(0, 160),
+    openGraph: {
+      title: `${product.title} - ${categoryName} | 오픈웹사이드`,
+      description: product.description?.slice(0, 160),
+      url: `https://openwebside.com/products/${id}`,
+      ...(product.logo_url && { images: [{ url: product.logo_url }] }),
+    },
+  };
 }
 
 export default async function ProductDetailPage({ params }: PageProps) {
