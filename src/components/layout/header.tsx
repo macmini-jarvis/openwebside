@@ -111,14 +111,6 @@ export function Header() {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        {/* 문의 */}
-        <Link
-          href="/contact"
-          className="hidden md:inline text-xs text-muted-foreground/60 hover:text-muted-foreground transition-colors"
-        >
-          문의
-        </Link>
-
         {/* 검색바 */}
         <form onSubmit={handleSearch} className="flex-1 max-w-md hidden md:flex">
           <div className="relative w-full">
@@ -133,6 +125,12 @@ export function Header() {
         </form>
 
         <div className="flex items-center gap-2 ml-auto">
+          <Link
+            href="/contact"
+            className="hidden md:inline text-xs text-muted-foreground/60 hover:text-muted-foreground transition-colors"
+          >
+            문의
+          </Link>
           {user ? (
             <>
               <Button
