@@ -5,15 +5,17 @@ import Link from "next/link";
 import {
   Trophy,
   ThumbsUp,
-  Star,
   Flame,
-  ArrowRight,
   Newspaper,
-  TrendingUp,
   Sparkles,
   Globe,
+  ExternalLink,
+  BarChart3,
+  FileText,
+  Users,
 } from "lucide-react";
 import { getCategoryName } from "@/lib/categories";
+import { fetchTechNews } from "@/lib/news";
 import type { Product } from "@/types/database";
 
 interface PageProps {
@@ -94,34 +96,6 @@ function RankingItem({
   );
 }
 
-const AI_NEWS = [
-  {
-    title: "GPT-5 출시 — 멀티모달 성능 대폭 향상",
-    tag: "AI",
-    time: "2시간 전",
-  },
-  {
-    title: "구글, Gemini 2.5 Pro 무료 공개",
-    tag: "AI",
-    time: "5시간 전",
-  },
-  {
-    title: "네이버, HyperCLOVA X 웹 도구 출시",
-    tag: "국내",
-    time: "8시간 전",
-  },
-  {
-    title: "Figma AI, 디자인 자동 생성 기능 베타",
-    tag: "디자인",
-    time: "12시간 전",
-  },
-  {
-    title: "Vercel, 서버리스 GPU 지원 발표",
-    tag: "개발",
-    time: "1일 전",
-  },
-];
-
 export default async function HomePage({ searchParams }: PageProps) {
   const params = await searchParams;
   const supabase = await createClient();
@@ -163,6 +137,23 @@ export default async function HomePage({ searchParams }: PageProps) {
     .eq("status", "approved")
     .order("created_at", { ascending: false })
     .limit(5);
+
+  // 실시간 뉴스
+  const news = await fetchTechNews();
+
+  // 사이트 통계
+  const { count: totalProducts } = await supabase
+    .from("products")
+    .select("*", { count: "exact", head: true })
+    .eq("status", "approved");
+
+  const { count: totalReviews } = await supabase
+    .from("reviews")
+    .select("*", { count: "exact", head: true });
+
+  const { count: totalUsers } = await supabase
+    .from("users")
+    .select("*", { count: "exact", head: true });
 
   const isFiltered = params.q || params.category || params.user;
 
@@ -320,55 +311,82 @@ export default async function HomePage({ searchParams }: PageProps) {
             )}
           </div>
 
-          {/* AI / 테크 뉴스 */}
+          {/* AI / 테크 뉴스 — 실시간 */}
           <div className="border rounded-xl p-4">
             <div className="flex items-center justify-between mb-3">
               <h2 className="font-bold text-sm flex items-center gap-2">
                 <Newspaper className="h-4 w-4 text-blue-500" />
-                AI / 테크 뉴스
+                테크 뉴스
               </h2>
+              <a
+                href="https://news.hada.io"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-muted-foreground hover:text-primary transition-colors"
+              >
+                GeekNews
+              </a>
             </div>
-            <div className="space-y-3">
-              {AI_NEWS.map((news, i) => (
-                <div
-                  key={i}
-                  className="group cursor-pointer"
-                >
-                  <div className="flex items-start gap-2">
-                    <span className="shrink-0 text-xs font-medium px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
-                      {news.tag}
+            {news.length > 0 ? (
+              <div className="space-y-2.5">
+                {news.map((item, i) => (
+                  <a
+                    key={i}
+                    href={item.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-start gap-2 group py-1"
+                  >
+                    <span className="shrink-0 text-xs text-muted-foreground/60 font-mono w-4 pt-0.5 text-right">
+                      {i + 1}
                     </span>
                     <div className="min-w-0 flex-1">
                       <p className="text-sm leading-snug group-hover:text-primary transition-colors">
-                        {news.title}
+                        {item.title}
                       </p>
                       <p className="text-xs text-muted-foreground mt-0.5">
-                        {news.time}
+                        {item.time}
                       </p>
                     </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+                    <ExternalLink className="h-3 w-3 text-muted-foreground/30 shrink-0 mt-1 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </a>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground text-center py-4">
+                뉴스를 불러오는 중...
+              </p>
+            )}
           </div>
 
-          {/* 카테고리 바로가기 */}
+          {/* 사이트 통계 */}
           <div className="border rounded-xl p-4">
-            <h2 className="font-bold text-sm flex items-center gap-2 mb-3">
-              <TrendingUp className="h-4 w-4 text-green-500" />
-              카테고리
+            <h2 className="font-bold text-sm flex items-center gap-2 mb-4">
+              <BarChart3 className="h-4 w-4 text-green-500" />
+              사이트 현황
             </h2>
-            <div className="grid grid-cols-2 gap-2">
-              {CATEGORIES.map((cat) => (
-                <Link
-                  key={cat.slug}
-                  href={`/category/${cat.slug}`}
-                  className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm hover:bg-muted transition-colors"
-                >
-                  <span>{cat.icon}</span>
-                  <span className="truncate">{cat.name}</span>
-                </Link>
-              ))}
+            <div className="grid grid-cols-3 gap-3">
+              <div className="text-center">
+                <div className="flex items-center justify-center mb-1.5">
+                  <Globe className="h-4 w-4 text-muted-foreground" />
+                </div>
+                <p className="text-xl font-bold">{totalProducts ?? 0}</p>
+                <p className="text-xs text-muted-foreground">등록 사이트</p>
+              </div>
+              <div className="text-center">
+                <div className="flex items-center justify-center mb-1.5">
+                  <FileText className="h-4 w-4 text-muted-foreground" />
+                </div>
+                <p className="text-xl font-bold">{totalReviews ?? 0}</p>
+                <p className="text-xs text-muted-foreground">리뷰</p>
+              </div>
+              <div className="text-center">
+                <div className="flex items-center justify-center mb-1.5">
+                  <Users className="h-4 w-4 text-muted-foreground" />
+                </div>
+                <p className="text-xl font-bold">{totalUsers ?? 0}</p>
+                <p className="text-xs text-muted-foreground">사용자</p>
+              </div>
             </div>
           </div>
         </aside>
