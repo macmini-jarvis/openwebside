@@ -10,9 +10,8 @@ import {
   Sparkles,
   Globe,
   ExternalLink,
-  BarChart3,
-  FileText,
-  Users,
+  ArrowRight,
+  CheckCircle,
 } from "lucide-react";
 import { getCategoryName } from "@/lib/categories";
 import { fetchTechNews } from "@/lib/news";
@@ -141,20 +140,6 @@ export default async function HomePage({ searchParams }: PageProps) {
   // 실시간 뉴스
   const news = await fetchTechNews();
 
-  // 사이트 통계
-  const { count: totalProducts } = await supabase
-    .from("products")
-    .select("*", { count: "exact", head: true })
-    .eq("status", "approved");
-
-  const { count: totalReviews } = await supabase
-    .from("reviews")
-    .select("*", { count: "exact", head: true });
-
-  const { count: totalUsers } = await supabase
-    .from("users")
-    .select("*", { count: "exact", head: true });
-
   const isFiltered = params.q || params.category || params.user;
 
   return (
@@ -233,7 +218,7 @@ export default async function HomePage({ searchParams }: PageProps) {
         </div>
 
         {/* 오른쪽: 사이드바 */}
-        <aside className="hidden lg:block w-80 shrink-0 space-y-6">
+        <aside className="hidden lg:block w-72 shrink-0 sticky top-20 self-start space-y-5 max-h-[calc(100vh-6rem)] overflow-y-auto">
           {/* 인기 랭킹 */}
           <div className="border rounded-xl p-4">
             <div className="flex items-center justify-between mb-3">
@@ -311,20 +296,20 @@ export default async function HomePage({ searchParams }: PageProps) {
             )}
           </div>
 
-          {/* AI / 테크 뉴스 — 실시간 */}
+          {/* AI/테크 뉴스 — 실시간 */}
           <div className="border rounded-xl p-4">
             <div className="flex items-center justify-between mb-3">
               <h2 className="font-bold text-sm flex items-center gap-2">
                 <Newspaper className="h-4 w-4 text-blue-500" />
-                테크 뉴스
+                AI/테크 뉴스
               </h2>
               <a
-                href="https://news.hada.io"
+                href="https://news.google.com/search?q=AI%20%ED%85%8C%ED%81%AC&hl=ko&gl=KR"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-xs text-muted-foreground hover:text-primary transition-colors"
               >
-                GeekNews
+                Google 뉴스
               </a>
             </div>
             {news.length > 0 ? (
@@ -344,9 +329,19 @@ export default async function HomePage({ searchParams }: PageProps) {
                       <p className="text-sm leading-snug group-hover:text-primary transition-colors">
                         {item.title}
                       </p>
-                      <p className="text-xs text-muted-foreground mt-0.5">
-                        {item.time}
-                      </p>
+                      <div className="flex items-center gap-1.5 mt-0.5">
+                        {item.source && (
+                          <span className="text-xs text-muted-foreground/80 font-medium">
+                            {item.source}
+                          </span>
+                        )}
+                        {item.source && item.time && (
+                          <span className="text-xs text-muted-foreground/40">·</span>
+                        )}
+                        <span className="text-xs text-muted-foreground">
+                          {item.time}
+                        </span>
+                      </div>
                     </div>
                     <ExternalLink className="h-3 w-3 text-muted-foreground/30 shrink-0 mt-1 opacity-0 group-hover:opacity-100 transition-opacity" />
                   </a>
@@ -359,35 +354,39 @@ export default async function HomePage({ searchParams }: PageProps) {
             )}
           </div>
 
-          {/* 사이트 통계 */}
-          <div className="border rounded-xl p-4">
-            <h2 className="font-bold text-sm flex items-center gap-2 mb-4">
-              <BarChart3 className="h-4 w-4 text-green-500" />
-              사이트 현황
+          {/* 사이트 등록 가이드 */}
+          <div className="border rounded-xl p-4 bg-gradient-to-br from-primary/5 to-transparent">
+            <h2 className="font-bold text-sm flex items-center gap-2 mb-3">
+              <Sparkles className="h-4 w-4 text-primary" />
+              내 사이트 등록하기
             </h2>
-            <div className="grid grid-cols-3 gap-3">
-              <div className="text-center">
-                <div className="flex items-center justify-center mb-1.5">
-                  <Globe className="h-4 w-4 text-muted-foreground" />
-                </div>
-                <p className="text-xl font-bold">{totalProducts ?? 0}</p>
-                <p className="text-xs text-muted-foreground">등록 사이트</p>
+            <div className="space-y-2.5">
+              <div className="flex items-start gap-2">
+                <CheckCircle className="h-4 w-4 text-green-500 shrink-0 mt-0.5" />
+                <p className="text-xs text-muted-foreground">
+                  무료로 웹사이트를 등록하고 홍보하세요
+                </p>
               </div>
-              <div className="text-center">
-                <div className="flex items-center justify-center mb-1.5">
-                  <FileText className="h-4 w-4 text-muted-foreground" />
-                </div>
-                <p className="text-xl font-bold">{totalReviews ?? 0}</p>
-                <p className="text-xs text-muted-foreground">리뷰</p>
+              <div className="flex items-start gap-2">
+                <CheckCircle className="h-4 w-4 text-green-500 shrink-0 mt-0.5" />
+                <p className="text-xs text-muted-foreground">
+                  리뷰와 별점으로 신뢰도를 높이세요
+                </p>
               </div>
-              <div className="text-center">
-                <div className="flex items-center justify-center mb-1.5">
-                  <Users className="h-4 w-4 text-muted-foreground" />
-                </div>
-                <p className="text-xl font-bold">{totalUsers ?? 0}</p>
-                <p className="text-xs text-muted-foreground">사용자</p>
+              <div className="flex items-start gap-2">
+                <CheckCircle className="h-4 w-4 text-green-500 shrink-0 mt-0.5" />
+                <p className="text-xs text-muted-foreground">
+                  카테고리별 랭킹에서 노출되세요
+                </p>
               </div>
             </div>
+            <Link
+              href="/products/new"
+              className="mt-4 w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
+            >
+              사이트 등록하기
+              <ArrowRight className="h-4 w-4" />
+            </Link>
           </div>
         </aside>
       </div>
