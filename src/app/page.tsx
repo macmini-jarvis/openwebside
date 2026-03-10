@@ -209,7 +209,7 @@ export default async function HomePage({ searchParams }: PageProps) {
             </p>
           )}
 
-          <ProductGrid products={products ?? []} currentUserId={user?.id} />
+          <ProductGrid products={products ?? []} currentUserId={params.user && params.user === user?.id ? user.id : undefined} />
         </div>
 
         {/* 오른쪽: 사이드바 */}
