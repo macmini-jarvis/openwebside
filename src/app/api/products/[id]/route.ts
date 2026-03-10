@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { rateLimit, getClientIp } from "@/lib/rate-limit";
 
@@ -59,6 +60,9 @@ export async function DELETE(
       { status: 500 }
     );
   }
+
+  revalidatePath("/");
+  revalidatePath(`/products/${id}`);
 
   return NextResponse.json({ success: true });
 }
