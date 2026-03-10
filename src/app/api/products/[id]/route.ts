@@ -48,10 +48,7 @@ export async function DELETE(
     );
   }
 
-  // 관련 데이터 삭제 (cascade)
-  await supabase.from("reviews").delete().eq("product_id", id);
-  await supabase.from("upvotes").delete().eq("product_id", id);
-  await supabase.from("site_verifications").delete().eq("product_id", id);
+  // products 삭제 (reviews, upvotes, site_verifications는 ON DELETE CASCADE로 자동 삭제)
   const { error } = await supabase.from("products").delete().eq("id", id);
 
   if (error) {

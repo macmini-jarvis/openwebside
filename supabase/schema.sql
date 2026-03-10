@@ -89,7 +89,7 @@ CREATE POLICY "users_read" ON users FOR SELECT USING (true);
 CREATE POLICY "users_insert" ON users FOR INSERT WITH CHECK (auth.uid() = id);
 CREATE POLICY "users_update" ON users FOR UPDATE USING (auth.uid() = id);
 
--- products: 승인된 것은 누구나 읽기, 로그인 사용자 등록, 본인만 수정
+-- products: 승인된 것은 누구나 읽기, 로그인 사용자 등록, 본인만 수정/삭제
 CREATE POLICY "products_read_approved" ON products FOR SELECT USING (
   status = 'approved' OR auth.uid() = user_id OR auth.jwt() ->> 'email' = 'openwebside@gmail.com'
 );
@@ -97,6 +97,7 @@ CREATE POLICY "products_insert" ON products FOR INSERT WITH CHECK (auth.uid() = 
 CREATE POLICY "products_update" ON products FOR UPDATE USING (
   auth.uid() = user_id OR auth.jwt() ->> 'email' = 'openwebside@gmail.com'
 );
+CREATE POLICY "products_delete" ON products FOR DELETE USING (auth.uid() = user_id);
 
 -- reviews: 누구나 읽기, 로그인 사용자 작성, 본인만 수정/삭제
 CREATE POLICY "reviews_read" ON reviews FOR SELECT USING (true);
