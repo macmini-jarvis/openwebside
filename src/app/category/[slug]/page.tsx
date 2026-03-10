@@ -48,6 +48,10 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
 
   const { data: products } = await query.limit(50);
 
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   return (
     <div className="px-4 md:px-6 py-6">
       <div className="mb-6">
@@ -68,7 +72,7 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
         </div>
       </div>
 
-      <ProductGrid products={products ?? []} />
+      <ProductGrid products={products ?? []} currentUserId={user?.id} />
     </div>
   );
 }

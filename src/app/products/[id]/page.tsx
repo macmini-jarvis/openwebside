@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Star, ExternalLink } from "lucide-react";
 import { UpvoteButton } from "@/components/products/upvote-button";
+import { DeleteButton } from "@/components/products/delete-button";
 import { ReviewSection } from "@/components/reviews/review-section";
 
 interface PageProps {
@@ -62,6 +63,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
   } = await supabase.auth.getUser();
 
   let hasUpvoted = false;
+  const isOwner = user?.id === product.user_id;
   if (user) {
     const { data } = await supabase
       .from("upvotes")
@@ -74,6 +76,16 @@ export default async function ProductDetailPage({ params }: PageProps) {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
+      {/* 소유자 관리 */}
+      {isOwner && (
+        <div className="flex items-center justify-between mb-4 p-3 rounded-lg bg-muted/50 border">
+          <span className="text-sm text-muted-foreground">
+            내가 등록한 사이트입니다
+          </span>
+          <DeleteButton productId={product.id} productTitle={product.title} />
+        </div>
+      )}
+
       {/* 헤더 */}
       <div className="flex gap-4 items-start">
         <div className="shrink-0 w-16 h-16 rounded-xl bg-muted flex items-center justify-center overflow-hidden">

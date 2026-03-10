@@ -140,6 +140,10 @@ export default async function HomePage({ searchParams }: PageProps) {
   // 실시간 뉴스
   const news = await fetchTechNews();
 
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   const isFiltered = params.q || params.category || params.user;
 
   return (
@@ -205,7 +209,7 @@ export default async function HomePage({ searchParams }: PageProps) {
             </p>
           )}
 
-          <ProductGrid products={products ?? []} />
+          <ProductGrid products={products ?? []} currentUserId={user?.id} />
         </div>
 
         {/* 오른쪽: 사이드바 */}
