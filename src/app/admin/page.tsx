@@ -13,7 +13,7 @@ import { ExternalLink, Check, X } from "lucide-react";
 import { toast } from "sonner";
 import type { Product } from "@/types/database";
 
-const ADMIN_EMAIL = "openwebside@gmail.com";
+const ADMIN_EMAIL = process.env.NEXT_PUBLIC_ADMIN_EMAIL ?? "openwebside@gmail.com";
 
 export default function AdminPage() {
   const [products, setProducts] = useState<Product[]>([]);

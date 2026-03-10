@@ -61,9 +61,18 @@ export default function NewProductPage() {
       return;
     }
 
-    // URL 형식 체크
+    // URL 형식 체크 + HTTPS 필수 + 내부망 차단
     try {
-      new URL(url);
+      const parsed = new URL(url);
+      if (parsed.protocol !== "https:") {
+        toast.error("HTTPS URL만 등록 가능합니다");
+        return;
+      }
+      const h = parsed.hostname;
+      if (h === "localhost" || h === "127.0.0.1" || h.startsWith("192.168.") || h.startsWith("10.")) {
+        toast.error("공개 도메인 URL만 등록 가능합니다");
+        return;
+      }
     } catch {
       toast.error("올바른 URL을 입력해주세요 (https://...)");
       return;
@@ -97,7 +106,8 @@ export default function NewProductPage() {
       .single();
 
     if (error) {
-      toast.error("등록에 실패했습니다: " + error.message);
+      console.error("[Product Create Error]", error.message);
+      toast.error("등록에 실패했습니다. 다시 시도해주세요.");
       setLoading(false);
       return;
     }

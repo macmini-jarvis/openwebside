@@ -1,7 +1,17 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { rateLimit, getClientIp } from "@/lib/rate-limit";
 
 export async function POST(request: Request) {
+  const ip = getClientIp(request);
+  const { success } = rateLimit(`upvotes:${ip}`, 30, 60 * 1000); // 분당 30회
+  if (!success) {
+    return NextResponse.json(
+      { error: "요청이 너무 많습니다. 잠시 후 다시 시도해주세요." },
+      { status: 429 }
+    );
+  }
+
   const supabase = await createClient();
   const {
     data: { user },
