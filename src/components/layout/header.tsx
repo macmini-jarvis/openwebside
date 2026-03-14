@@ -35,21 +35,22 @@ export function Header() {
   const supabase = createClient();
 
   useEffect(() => {
-    const getUser = async () => {
+    const init = async () => {
       const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      setUser(user);
-      if (user) {
+        data: { session },
+      } = await supabase.auth.getSession();
+      const currentUser = session?.user ?? null;
+      setUser(currentUser);
+      if (currentUser) {
         const { data } = await supabase
           .from("users")
           .select("*")
-          .eq("id", user.id)
+          .eq("id", currentUser.id)
           .single();
         setProfile(data);
       }
     };
-    getUser();
+    init();
 
     const {
       data: { subscription },

@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { ProductGrid } from "@/components/products/product-grid";
 import { CATEGORIES } from "@/lib/categories";
 import Link from "next/link";
+import Image from "next/image";
 import {
   Trophy,
   ThumbsUp,
@@ -44,12 +45,21 @@ function JsonLd() {
   );
 }
 
+interface SidebarProduct {
+  id: string;
+  title: string;
+  description: string;
+  logo_url: string | null;
+  category: string;
+  upvote_count: number;
+}
+
 function RankingItem({
   rank,
   product,
 }: {
   rank: number;
-  product: Product;
+  product: SidebarProduct;
 }) {
   const isTop3 = rank <= 3;
   const medals = ["", "🥇", "🥈", "🥉"];
@@ -68,10 +78,13 @@ function RankingItem({
       </span>
       <div className="shrink-0 w-8 h-8 rounded-md bg-muted flex items-center justify-center overflow-hidden">
         {product.logo_url ? (
-          <img
+          <Image
             src={product.logo_url}
             alt={product.title}
+            width={32}
+            height={32}
             className="w-full h-full object-cover"
+            loading="lazy"
           />
         ) : (
           <span className="text-xs font-bold text-muted-foreground">
@@ -119,30 +132,33 @@ export default async function HomePage({ searchParams }: PageProps) {
     query = query.eq("user_id", params.user);
   }
 
-  const { data: products } = await query.limit(50);
+  const sidebarColumns = "id, title, description, logo_url, category, upvote_count";
 
-  // 인기 랭킹 (추천순)
-  const { data: topProducts } = await supabase
-    .from("products")
-    .select("*")
-    .eq("status", "approved")
-    .order("upvote_count", { ascending: false })
-    .limit(5);
-
-  // 최근 등록
-  const { data: recentProducts } = await supabase
-    .from("products")
-    .select("*")
-    .eq("status", "approved")
-    .order("created_at", { ascending: false })
-    .limit(5);
-
-  // 실시간 뉴스
-  const news = await fetchTechNews();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const [
+    { data: products },
+    { data: topProducts },
+    { data: recentProducts },
+    news,
+    { data: { user } },
+  ] = await Promise.all([
+    query.limit(50),
+    supabase
+      .from("products")
+      .select(sidebarColumns)
+      .eq("status", "approved")
+      .order("upvote_count", { ascending: false })
+      .limit(5)
+      .returns<SidebarProduct[]>(),
+    supabase
+      .from("products")
+      .select(sidebarColumns)
+      .eq("status", "approved")
+      .order("created_at", { ascending: false })
+      .limit(5)
+      .returns<SidebarProduct[]>(),
+    fetchTechNews(),
+    supabase.auth.getUser(),
+  ]);
 
   const isFiltered = params.q || params.category || params.user;
 
@@ -262,10 +278,13 @@ export default async function HomePage({ searchParams }: PageProps) {
                   >
                     <div className="shrink-0 w-8 h-8 rounded-md bg-muted flex items-center justify-center overflow-hidden">
                       {product.logo_url ? (
-                        <img
+                        <Image
                           src={product.logo_url}
                           alt={product.title}
+                          width={32}
+                          height={32}
                           className="w-full h-full object-cover"
+                          loading="lazy"
                         />
                       ) : (
                         <span className="text-xs font-bold text-muted-foreground">

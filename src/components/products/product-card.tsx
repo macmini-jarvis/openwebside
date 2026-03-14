@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -56,10 +57,13 @@ export function ProductCard({ product, currentUserId }: ProductCardProps) {
             {/* 로고 */}
             <div className="shrink-0 w-12 h-12 rounded-xl bg-muted flex items-center justify-center overflow-hidden ring-1 ring-border">
               {product.logo_url ? (
-                <img
+                <Image
                   src={product.logo_url}
                   alt={product.title}
+                  width={48}
+                  height={48}
                   className="w-full h-full object-cover"
+                  loading="lazy"
                 />
               ) : (
                 <span className="text-xl font-bold text-muted-foreground">

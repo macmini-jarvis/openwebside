@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 import { getCategoryName, getSubcategoryName } from "@/lib/categories";
@@ -90,9 +91,11 @@ export default async function ProductDetailPage({ params }: PageProps) {
       <div className="flex gap-4 items-start">
         <div className="shrink-0 w-16 h-16 rounded-xl bg-muted flex items-center justify-center overflow-hidden">
           {product.logo_url ? (
-            <img
+            <Image
               src={product.logo_url}
               alt={product.title}
+              width={64}
+              height={64}
               className="w-full h-full object-cover"
             />
           ) : (
